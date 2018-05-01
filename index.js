@@ -7,7 +7,7 @@ function getDataFromApi(searchTerm, callback) {
       key: 'AIzaSyCpwi5H_OHjs4kUpzs0OX70rQyp1n8eV9c',
       part: 'snippet',
       q: `${searchTerm} in:name`,
-      per_page: 10
+      per_page: 5
     },
     
     dataType: 'json',
@@ -20,19 +20,23 @@ function getDataFromApi(searchTerm, callback) {
 
 function renderResult(result) {
   return `
-      <ul id="results-list">
-        <li class="result"> 
+        <li class="result-item"> 
           <a href="http://www.youtube.com/watch?v=${result.id.videoId}">
-            <img class="thumbnail-image" src="${result.snippet.thumbnails.medium.url}" alt="thumbnail">
+            <img class="thumbnail-image" src="${result.snippet.thumbnails.medium.url}" alt="${result.snippet.title}">
           </a> 
         </li>
-      </ul> 
   `;
 }
 
 function displayYouTubeSearchData(data) {
-  const results = data.items.map(renderResult).join("");
-  $('.js-search-results').html(results);
+  
+  const results = data.items.map(renderResult).join("\n");
+  const resultsString = `
+    <h2 class="results-notice" aria-live="assertive">There are ${data.pageInfo.resultsPerPage} results on this page</h2>
+    <ul class="search-results">${results}</ul> 
+  `
+  $('.js-search-results').html(resultsString);
+
 }
 
 function watchSubmit() {
